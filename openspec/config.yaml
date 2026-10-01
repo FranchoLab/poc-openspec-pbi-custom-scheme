@@ -1,4 +1,4 @@
-schema: spec-driven
+schema: pbi-driven
 githubCopilot:
   cloudAgent: false
 

@@ -1,0 +1,14 @@
+{
+  "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "acceptanceCriteria": [
+    { "id": "AC01", "text": "Release notes are categorized" },
+    { "id": "AC02", "text": "Empty releases show an explicit message" }
+  ],
+  "scenarios": [{ "id": "S01", "text": "Tagged releases contain categorized notes" }],
+  "evidence": [
+    { "targetId": "AC01", "status": "pass", "evidence": "release test passes" },
+    { "targetId": "S01", "status": "fail", "evidence": "notes were emitted without categories" }
+  ],
+  "changedPaths": ["src/release-notes.ts", "src/unrelated-auth.ts"],
+  "allowedPathPrefixes": ["src/release-notes.ts", "test/release-notes.test.ts"]
+}

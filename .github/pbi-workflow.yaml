@@ -1,0 +1,29 @@
+version: 1
+trusted:
+  pbiAuthors:
+    - francho
+  approvers:
+    - francho
+verification:
+  install:
+    enabled: true
+    command: cd tools/pbi-workflow && npm ci
+  format:
+    enabled: false
+    reason: This repository has no standalone format check
+  lint:
+    enabled: true
+    command: cd tools/pbi-workflow && npm run lint
+  typecheck:
+    enabled: true
+    command: cd tools/pbi-workflow && npm run build
+  test:
+    enabled: true
+    command: cd tools/pbi-workflow && npm test
+  build:
+    enabled: true
+    command: cd tools/pbi-workflow && npm run build
+demo:
+  start:
+    enabled: false
+    reason: This repository has no interactive application

@@ -1,0 +1,49 @@
+name: pbi-driven
+version: 1
+description: GitHub PBI workflow with durable specs and externally orchestrated tasks
+artifacts:
+  - id: specs
+    generates: "specs/**/*.md"
+    description: Behavioral specifications derived from an approved GitHub PBI contract
+    template: spec.md
+    instruction: |
+      A GitHub PBI is required. If the user did not provide its issue number or
+      URL, ask for it before creating any artifact.
+
+      Invoke the pbi-refinement skill to fetch and validate the PBI, conduct
+      technical grilling, update only its managed Technical Contract region,
+      and obtain trusted human approval for the current revision. Stop while
+      approval is missing or the PBI is incomplete.
+
+      After approval, invoke the pbi-specification skill to create one delta
+      spec per capability in specs/<capability-path>/spec.md. Specifications
+      contain observable behavior only. GitHub remains canonical for product
+      context, technical decisions, delivery slices, and runtime state.
+    requires: []
+
+  - id: tasks
+    generates: tasks.md
+    description: Single compatibility task that delegates execution to the PBI orchestrator
+    template: tasks.md
+    instruction: |
+      Invoke the pbi-task-graph skill to publish or reconcile the approved
+      delivery slices as native GitHub sub-issues, including stable IDs,
+      blockers, spec coverage, verification, and initial state labels.
+
+      Only after publication succeeds, create tasks.md with exactly one pending
+      checkbox. Replace the template placeholder with the canonical PBI URL.
+      Do not duplicate GitHub sub-issues as local tasks.
+    requires:
+      - specs
+
+apply:
+  requires:
+    - tasks
+  tracks: tasks.md
+  instruction: |
+    The pending task delegates execution to the pbi-orchestrator skill. Invoke
+    that skill with the PBI URL from tasks.md. Reconstruct detailed progress
+    from GitHub, resume safely, and keep the checkbox pending while blocked or
+    paused. Mark it complete only after all task PRs are merged, current-SHA
+    documentation and QA gates pass, demo disposition is approved by a trusted
+    human, OpenSpec is archived on the PBI branch, and the final PR is ready.

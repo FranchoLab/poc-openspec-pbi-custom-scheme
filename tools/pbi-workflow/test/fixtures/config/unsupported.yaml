@@ -1,0 +1,18 @@
+version: 2
+language: es
+trusted:
+  pbiAuthors:
+    - product-owner
+  approvers:
+    - engineering-lead
+verification:
+  install: { enabled: true, command: npm ci }
+  format: { enabled: false, reason: Not configured }
+  lint: { enabled: true, command: npm run lint }
+  typecheck: { enabled: true, command: npm run build }
+  test: { enabled: true, command: npm test }
+  build: { enabled: true, command: npm run build }
+demo:
+  start: { enabled: false, reason: Not configured }
+pullRequests:
+  finalAutoMerge: true

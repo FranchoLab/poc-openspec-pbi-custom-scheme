@@ -1,0 +1,11 @@
+{
+  "headSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "acceptanceCriteria": [{ "id": "AC01", "text": "Release notes are categorized" }],
+  "scenarios": [{ "id": "S01", "text": "Tagged releases contain categorized notes" }],
+  "evidence": [
+    { "targetId": "AC01", "status": "pass", "evidence": "release test passes" },
+    { "targetId": "S01", "status": "pass", "evidence": "scenario test passes" }
+  ],
+  "changedPaths": ["src/release-notes.ts", "test/release-notes.test.ts"],
+  "allowedPathPrefixes": ["src", "test"]
+}

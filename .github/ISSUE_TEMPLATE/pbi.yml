@@ -1,0 +1,77 @@
+name: Product Backlog Item
+description: Propose a product change for the PBI-driven workflow
+title: "[PBI] "
+labels:
+  - pbi/refinement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Write the complete PBI in English. Replace every placeholder with concrete information.
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User Story
+      description: Identify the beneficiary, capability, and business outcome.
+      placeholder: |
+        As a <role>,
+        I want <capability>,
+        so that <business outcome>.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Explain the current behavior and the problem or opportunity.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: State what this PBI must deliver.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Provide observable and independently verifiable criteria.
+      placeholder: |
+        - [ ] Given ..., when ..., then ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: related-documentation
+    attributes:
+      label: Related Documentation
+      description: Provide relevant links, or write "Not applicable" with a justification.
+    validations:
+      required: true
+
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints
+      description: List compatibility, security, operational, or delivery constraints.
+    validations:
+      required: true
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of Scope
+      description: State adjacent behavior this PBI intentionally excludes.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        The workflow adds a managed **Technical Contract** after refinement. Do not add or edit that section manually.

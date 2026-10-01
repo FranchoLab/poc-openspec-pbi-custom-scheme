@@ -1,0 +1,62 @@
+import { readFile } from "node:fs/promises";
+
+import { describe, expect, it, vi } from "vitest";
+
+import { retrieveAndValidatePbi, validatePbiPreflight } from "../src/pbi-preflight.js";
+import type { GitHubIssue } from "../src/commands.js";
+
+async function issue(bodyFixture: string, overrides: Partial<GitHubIssue> = {}): Promise<GitHubIssue> {
+  return {
+    number: 42,
+    title: "Generate release notes",
+    url: "https://github.com/acme/shop/issues/42",
+    state: "OPEN",
+    body: await readFile(new URL(`./fixtures/pbi/${bodyFixture}.md`, import.meta.url), "utf8"),
+    author: { login: "product-owner" },
+    ...overrides,
+  };
+}
+
+const options = { trustedAuthors: ["product-owner"], trustedApprovers: ["lead"] };
+
+describe("PBI preflight", () => {
+  it("accepts a complete trusted English PBI", async () => {
+    const result = validatePbiPreflight(await issue("valid"), options);
+    expect(result.accepted).toBe(true);
+    expect(result.findings).toEqual([]);
+    expect(result.sections.scope).toContain("Generate release notes");
+  });
+
+  it("reports all actionable problems without generating downstream work", async () => {
+    const result = validatePbiPreflight(
+      await issue("rejected", { state: "CLOSED", author: { login: "outsider" } }),
+      options,
+    );
+    expect(result.accepted).toBe(false);
+    expect(result.findings.map(({ code }) => code)).toEqual(expect.arrayContaining([
+      "issue-closed",
+      "untrusted-author",
+      "not-english",
+      "invalid-user-story",
+      "untestable-acceptance-criteria",
+      "invalid-documentation",
+      "unresolved-placeholder",
+      "scope-contradiction",
+    ]));
+  });
+
+  it("allows an untrusted author only with explicit approval from a trusted approver", async () => {
+    const pbi = await issue("valid", { author: { login: "contributor" } });
+    expect(validatePbiPreflight(pbi, options).accepted).toBe(false);
+    expect(validatePbiPreflight(pbi, { ...options, authorApproval: { approvedBy: "lead" } }).accepted).toBe(true);
+  });
+
+  it("retrieves the requested issue exactly once before validation", async () => {
+    const pbi = await issue("valid");
+    const reader = { getIssue: vi.fn().mockResolvedValue(pbi) };
+    const result = await retrieveAndValidatePbi(reader, 42, options);
+    expect(reader.getIssue).toHaveBeenCalledWith(42);
+    expect(reader.getIssue).toHaveBeenCalledTimes(1);
+    expect(result.accepted).toBe(true);
+  });
+});
